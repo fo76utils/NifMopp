@@ -23,7 +23,7 @@ jobs:
         msystem: MINGW32
         update: true
         cache: true
-        install: 'base-devel msys/p7zip'
+        install: 'base-devel mingw-w64-ucrt-x86_64-gcc'
 
     - name: 'Build with GCC'
       shell: msys2 {0}
