@@ -1,0 +1,39 @@
+name: Build NifMopp
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    name: Build MSYS2
+
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: 'Setup MSYS2'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW32
+        update: true
+        cache: true
+        install: 'base-devel msys/p7zip'
+
+    - name: 'Build with GCC'
+      shell: msys2 {0}
+      run: |
+        mkdir release
+        gcc -Wall -std=c99 -m32 -mwindows -O2 NifMopp.c -o release/NifMopp.exe -static -s
+
+    - name: 'Upload Artifacts'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-win
+        path: |
+          release
